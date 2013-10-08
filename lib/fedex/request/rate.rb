@@ -32,6 +32,11 @@ module Fedex
           add_shipper(xml)
           add_recipient(xml)
           add_shipping_charges_payment(xml)
+          if @shipping_options[:saturday_delivery] == true
+            xml.SpecialServicesRequested{
+              xml.SpecialServiceTypes "SATURDAY_DELIVERY"
+            }
+          end
           add_customs_clearance(xml) if @customs_clearance
           xml.RateRequestTypes "ACCOUNT"
           add_packages(xml)
