@@ -1,12 +1,15 @@
 require 'fedex/credentials'
 require 'fedex/request/label'
 require 'fedex/request/rate'
+require 'fedex/request/freight_rate'
 require 'fedex/request/tracking_information'
 require 'fedex/request/address'
 require 'fedex/request/document'
 
 module Fedex
   class Shipment
+
+    attr_accessor :credentials, :options
 
     # In order to use Fedex rates API you must first apply for a developer(and later production keys),
     # Visit {http://www.fedex.com/us/developer/ Fedex Developer Center} for more information about how to obtain your keys.
@@ -37,6 +40,10 @@ module Fedex
     # @param [String] service_type, A valid fedex service type, to view a complete list of services Fedex::Shipment::SERVICE_TYPES
     def rate(options = {})
       Request::Rate.new(@credentials, options).process_request
+    end
+
+    def freight_rate(options = {})
+      Request::FreightRate.new(@credentials, options).process_request
     end
 
     # @param [Hash] address, A hash containing the address information
