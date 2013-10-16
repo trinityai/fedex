@@ -4,7 +4,9 @@ module Fedex
   module Request
     class FreightRate < Base
       def process_request
-        api_response = self.class.post(api_url, :body => build_xml)
+        body = build_xml
+        puts body if @debug
+        api_response = self.class.post(api_url, :body => body)
         puts api_response if @debug
         response = parse_response(api_response)
         if success?(response)
@@ -38,7 +40,7 @@ module Fedex
           add_shipping_charges_payment(xml)
           add_freight_shipment_detail(xml)
           xml.RateRequestTypes "ACCOUNT"
-          xml.Packages @packages.size
+          xml.PackageCount @packages.size
         }
       end
 
@@ -89,6 +91,11 @@ module Fedex
       def add_shipping_charges_payment(xml)
         xml.ShippingChargesPayment{
           xml.PaymentType "SENDER"
+          xml.Payor {
+            xml.ResponsibleParty {
+              xml.AccountNumber @credentials.account_number
+            }
+          }
         }
       end
 
